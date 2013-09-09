@@ -1,10 +1,14 @@
 {
-  "name": "generator",
+  "name": "tmplgen",
   "version": "0.0.0",
-  "description": "ERROR: No README.md file found!",
+  "description": "Generate content by template generatory",
   "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "start": "node ./bin/tmplgen",
+	"test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "bin": {
+    "tmplgen": "./bin/tmplgen"
   },
   "repository": "git@github.com:asek-ll/generator.git",
   "author": "asek-ll",
