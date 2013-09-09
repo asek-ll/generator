@@ -1,6 +1,6 @@
 {
   "name": "tmplgen",
-  "version": "0.0.0",
+  "version": "0.0.1",
   "description": "Generate content by template generatory",
   "main": "index.js",
   "scripts": {
