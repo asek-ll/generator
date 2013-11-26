@@ -1,6 +1,6 @@
 #!/usr/bin/env node 
 
-var generator = require('./lib/generator.js'), 
+var generator = require('../lib/generator.js'), 
   path = require('path'), 
   async = require('async'),
   _ = require('lodash'),
