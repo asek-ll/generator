@@ -1,7 +1,7 @@
 var params, files, copy;
 
 params = [
-  //{name:'project_name', title:'Имя проекта', pattern:'^[A-Za-z][A-Za-z_0-9]+$'}
+  {name:'param', title:'Param title', pattern:'^[0-9]+$', 'default':  Math.floor(Math.random()*1000)}
 ];
 
 

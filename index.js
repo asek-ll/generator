@@ -15,13 +15,20 @@ var optimist = require('optimist')
 .options('t', {
   alias : 'template',
   describe: 'execute template in these directory'
+})
+.options('f', {
+  alias : 'force',
+  describe: 'use defaults if possible'
 });
 
 var argv = optimist.argv;
 
+generator.addDirectory(path.join(__dirname, 'generators'));
+
 generator.addDirectory(path.join(process.env.HOME, 'generators'));
-generator.addDirectory(path.join(process.cwd(), 'generators'));
-generator.addContext(path.join(process.env.HOME, 'generators','default.js'));
+
+generator.addContext(process.env);
+generator.addContextFile(path.join(process.env.HOME, 'generators','default.js'));
 
 if(argv.l){
   generator.getGenerators(function (err, path) {
@@ -48,8 +55,25 @@ if(argv.l){
         return next();
       }
 
-      return rl.question(param.title+'('+param.name+'): ', function (val) {
+      if(argv.f){
+        if(param['default']){
+          gen.setParam(param.name,param['default']);
+          return next();
+        }
+      }
+
+      var caption = param.title+' ('+param.name+')';
+      if(param['default']){
+        caption+='['+param['default']+']:';
+      } else {
+        caption+=':';
+      }
+
+      return rl.question(caption, function (val) {
         var reg;
+        if(val === '' && param['default']){
+          val = param['default'];
+        }
         if(param.pattern){
           reg = new RegExp(param.pattern);
           if(!reg.test(val)){
@@ -62,7 +86,7 @@ if(argv.l){
       });
     };
 
-    return async.map(params, iterate, function () {
+    return async.mapSeries(params, iterate, function () {
       return gen.run(function () {
         rl.close();
       });
