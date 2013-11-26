@@ -1,11 +1,11 @@
 {
   "name": "tmplgen",
-  "version": "0.0.2",
+  "version": "0.0.3",
   "description": "Generate content by template generatory",
   "main": "index.js",
   "scripts": {
     "start": "node ./bin/tmplgen",
-	"test": "echo \"Error: no test specified\" && exit 1"
+    "test": "echo \"Error: no test specified\" && exit 1"
   },
   "bin": {
     "tmplgen": "./bin/tmplgen"
@@ -14,8 +14,9 @@
   "author": "asek-ll",
   "license": "BSD",
   "dependencies": {
-    "commander": "~2.0.0",
     "async": "~0.2.9",
-    "ejs": "~0.8.4"
+    "ejs": "~0.8.4",
+    "optimist": "~0.6.0",
+    "lodash": "~2.3.0"
   }
 }

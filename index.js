@@ -1,49 +1,54 @@
-var program = require('commander'),
-  generator = require('./lib/generator.js'), 
+#!/usr/bin/env node 
+
+var generator = require('./lib/generator.js'), 
   path = require('path'), 
   async = require('async'),
+  _ = require('lodash'),
   readline = require('readline'), rl;
 
-
-generator.addDirectory(path.join(process.env.HOME, 'generators'));
-generator.addContext(path.join(process.env.HOME, 'generators','default.js'));
-
-
-program.version('0.0.1');
-
-program
-.command('list')
-.description('run setup commands for all envs')
-.action(function () {
-  generator.getGenerators(function (err, path) {
-    console.log(path);
-  });
+var optimist = require('optimist')
+.usage('use it')
+.options('l', {
+  alias : 'list',
+  describe: 'show available templates'
+})
+.options('t', {
+  alias : 'template',
+  describe: 'execute template in these directory'
 });
 
-program
-.command('run [name]')
-.description('run generator')
-.action(function (name) {
+var argv = optimist.argv;
 
+generator.addDirectory(path.join(process.env.HOME, 'generators'));
+generator.addDirectory(path.join(process.cwd(), 'generators'));
+generator.addContext(path.join(process.env.HOME, 'generators','default.js'));
+
+if(argv.l){
+  generator.getGenerators(function (err, path) {
+    _.each(_.keys(path), function (path) {
+      console.log(path);
+    });
+  });
+} else if(argv.t) {
   rl = readline.createInterface({
     input: process.stdin,
     output: process.stdout
   });
-
-  return generator.getGenerator(name, function (err, gen) {
+  generator.getGenerator(argv.t, function (err, gen) {
     if(err){
+      rl.close();
       return console.log(err);
     }
     var params = gen.getParams(), iterate;
 
     iterate = function (param, next) {
 
-      if(program[param.name]){
-        gen.setParam(param.name, program[param.name]);
+      if(argv[param.name]){
+        gen.setParam(param.name, argv[param.name]);
         return next();
       }
 
-      return rl.question(param.title+': ', function (val) {
+      return rl.question(param.title+'('+param.name+'): ', function (val) {
         var reg;
         if(param.pattern){
           reg = new RegExp(param.pattern);
@@ -63,7 +68,7 @@ program
       });
     });
   });
-});
 
-
-program.parse(process.argv);
+} else {
+  optimist.showHelp();
+}
